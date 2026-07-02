@@ -26,8 +26,8 @@ Products built for human buyers fail in this new environment. A signup flow that
 The Agent Readiness Grade is derived from a verification swarm that simulates how an autonomous agent would attempt to discover, evaluate, and integrate your product.
 
 - **Grade A** - An agent completes the full discovery-to-integration flow autonomously
-- **Grade B** - An agent finds and evaluates the product but is blocked at onboarding
-- **Grade C** - An agent finds the product but cannot evaluate it
+- **Grade B** - An agent is one real step from full autonomy, held back only by the human-issued first credential or a failed live operation
+- **Grade C** - An agent finds the product but cannot complete an autonomous path, whether blocked at provisioning or unable to parse what it found
 - **Grade D** - The product is invisible to agents
 
 The full grading rubric, including per-channel thresholds and verification logic, lives in [docs/grading.md](docs/grading.md).

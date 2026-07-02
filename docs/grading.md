@@ -28,21 +28,34 @@ The Coverage Map is informational. It does not produce a grade on its own.
 
 ## The Agent Readiness Grade
 
-The Agent Readiness Grade (A, B, C, or D) is derived from running a verification swarm against the Coverage Map. The swarm simulates autonomous agent behavior across the discovery-to-integration flow. The grade reflects how far an agent gets when attempting to use the product, not how many channels happen to exist.
+The Agent Readiness Grade (A, B, C, or D) is derived from running a verification swarm against the Coverage Map. The swarm simulates autonomous agent behavior across four stages: Discover (the agent finds the product), Evaluate (the agent reads enough to judge fit), Provision (the agent obtains a working credential without a human), and Execute (the agent performs a real operation). The audit walks three independent paths through those stages, one each for the API, CLI, and MCP surfaces, and records the deepest stage each path reaches. The grade reflects how far an agent gets when attempting to use the product, not how many channels happen to exist.
 
-The grade is determined by best-path logic. The audit identifies the path that gets an agent furthest through the discovery-to-integration flow and grades against that path's completion point.
+Each letter is defined by what an autonomous agent can and cannot do. Definitions are evaluated in precedence order: A first, then B, then C, then D. The first match wins.
 
 **Grade A: Full discovery-to-integration flow completed autonomously**
-The verification swarm completed the full path from discovery through authenticated API call without human intervention. At least one combination of channels supports an end-to-end autonomous integration.
+At least one path completed all four stages without human intervention, from discovery through a real authenticated operation. At least one combination of channels supports an end-to-end autonomous integration.
 
-**Grade B: Found and evaluated, blocked at onboarding**
-The swarm discovered the product and could evaluate its capabilities, but could not complete the provisioning flow to reach a working API call. The product is visible to agents but unreachable without human help.
+**Grade B: One real step from full autonomy**
+Grade B is reachable two ways. Under live execution probes, a path completes Provision but the real operation fails at runtime, holding the path at Stage 3. Under structured probes, the deepest path is blocked at Provision only by one thing, the first API key requiring a dashboard visit, while every other provisioning condition passes, and at least two of the three paths reach Evaluate. Both mean the same thing: the agent reached a working position and one real step stands between it and full autonomy. For the structured-probe case, that step is a human-in-the-loop first key, which is a defensible security boundary rather than a gap in machine readability.
 
-**Grade C: Found but cannot evaluate**
-The swarm discovered the product exists but could not retrieve enough information to evaluate whether it matches the agent's task. Discovery surfaces exist but their content is too sparse or broken for an agent to make a selection decision.
+**Grade C: Found, but no autonomous path completes**
+At least one path reaches Discover and the audit does not qualify for A or B. The report distinguishes two cases under the same letter. In the first, a path evaluated the surface but provisioning is blocked by more than the first-key step, for example no programmatic signup or no headless auth, or only one path reached Evaluate. In the second, the product was found but its surfaces were not machine-parseable enough to evaluate. The second case is always reported as "found but not parseable", naming the specific gap, never as absence.
 
 **Grade D: Invisible**
-The swarm could not discover the product through any of the six channels. The product is not findable through autonomous agent discovery paths.
+No path reaches Discover. The product is not findable through a public MCP registry, an ownership-verified repository, or a package-manager CLI. D means invisible to agents, and only that. A product that was found but could not be evaluated is C, not D.
+
+### Grade precedence
+
+Stages are numbered by depth: Discover is 1, Evaluate is 2, Provision is 3, Execute is 4. The letter comes from the deepest stage any path reaches:
+
+- A when a path reaches depth 4
+- B when a path reaches depth 3, or when the deepest path reaches depth 2 with provisioning blocked only by the dashboard-issued first key and at least two of the three paths at depth 2 or deeper
+- C when a path reaches depth 1 or 2 and the audit does not qualify for A or B
+- D when no path reaches depth 1
+
+### Methodology version
+
+This grading model is methodology version v1.3, effective 2026-07-02. It changed two things from the prior model: Grade B no longer requires live execution probes, and Grade D is reserved for genuine absence rather than also covering products that were found but could not be evaluated. Both changes exist so the letter tracks agent readiness. A strong product held back by one human-in-the-loop step is not the same as a product missing programmatic onboarding, and a product agents cannot parse is not the same as a product agents cannot find. Audits run before the effective date stay frozen under the methodology version stamped on them. A newer grade requires a new scan.
 
 ## Why v2 does not use weighted scoring
 
