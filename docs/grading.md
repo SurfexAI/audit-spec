@@ -75,7 +75,7 @@ Third, the grade is what buyers actually need. The question agents ask is not "w
 
 ## The verification swarm
 
-The verification swarm is a set of agents that simulate the actions an autonomous agent would take when attempting to use the product. The current implementation uses structured probes that exercise each channel against the agent flow. The output of each probe feeds the best-path logic that determines the final grade.
+The verification swarm is a set of agents that simulate the actions an autonomous agent would take when attempting to use the product. The crawlers perform all live HTTP requests against the product's public surfaces during the discovery phase. The verification swarm then evaluates the collected evidence against the agent flow, channel by channel, without touching the target again. The output of each evaluation feeds the best-path logic that determines the final grade.
 
 A future version of the swarm will incorporate language-model-driven agents for tasks that require interpretation rather than structured probing. The grade output remains the same A/B/C/D scale regardless of which probe layer produced it.
 
