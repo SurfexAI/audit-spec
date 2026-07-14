@@ -27,8 +27,10 @@ The MCP server is listed in multiple major registries with accurate metadata. To
 The crawler checks for:
 
 - DNS record or documented URL for an MCP server at a predictable location (mcp.{domain}, {domain}/mcp, or referenced in product docs)
-- Valid MCP server response to the `initialize` handshake
-- Tool list returned via `tools/list` with non-empty descriptions and input schemas
+- A live protocol handshake: the crawler sends a real MCP `initialize` request over Streamable HTTP to each candidate endpoint, including path-bearing URLs discovered in documentation and registry listings
+- Tool list enumerated through a live `tools/list` request when the handshake succeeds, with non-empty descriptions and input schemas. Live enumeration replaces documentation-derived tool counts
+- Auth-gated servers classified by their rejection response: a 401 or 403 carrying an OAuth bearer challenge or a JSON-RPC error object confirms a live MCP server whose tools are credential-gated
+- Documentation analysis as the fallback: when no candidate endpoint returns an MCP-shaped response, tool enumeration falls back to the server's published documentation and the audit records that the live probe got no MCP-shaped response
 - Listing in Anthropic's MCP registry (registry.modelcontextprotocol.io or equivalent)
 - Listing in third-party registries (Smithery, mcp.so, Glama, PulseMCP)
 - Documented authentication mechanism for the MCP server
