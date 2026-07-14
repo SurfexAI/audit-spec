@@ -55,13 +55,13 @@ Common signals of an Optimized spec:
 
 ## Observable signals
 
-The Surfex crawler looks for the OpenAPI specification at these locations in order:
+The Surfex crawler first resolves the company's canonical domain: it fetches the homepage and follows redirects, and when the landing host differs from the input host it probes standard paths on host candidates derived from both domains, with input-domain results keeping priority. It then looks for the OpenAPI specification at these locations in order:
 
 1. /.well-known/openapi.json and /.well-known/openapi.yaml
 2. /openapi.json and /openapi.yaml
 3. /api/openapi.json and /api/openapi.yaml
 4. URLs referenced in llms.txt
-5. URLs linked from the company's developer documentation pages
+5. URLs linked from developer documentation pages on the input domain, the canonical domain, and docs-family subdomains such as docs.{domain}
 6. Specifications hosted on common documentation CDNs (Speakeasy, Mintlify, ReadMe, Bump)
 
 When a candidate spec is found, the crawler validates that it parses as OpenAPI 3.x, counts the documented endpoints, and checks whether the spec covers the endpoints referenced in the company's public documentation.
